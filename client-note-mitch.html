@@ -1,0 +1,208 @@
+<div class="client-record-container">
+  <div class="client-header">
+    <div class="client-logo">
+      <img src="/s/Client-Record-Logo.png" alt="ICE Learning Center Logo">
+    </div>
+    <div class="client-search-wrapper">
+      <div class="client-search">
+        <input type="text" id="client-search-input" class="client-search-input" placeholder="Find a Client Record..." autocomplete="off">
+        <button id="client-search-button" class="client-search-button">Go</button>
+      </div>
+      <div class="autocomplete-results" id="autocomplete-results"></div>
+    </div>
+  </div>
+  <div class="client-info">
+    <h1>Mitch</h1>
+    <h2>Client ID 062</h2>
+  </div>
+<div class="info-table-wrapper">
+  <dl class="info-list">
+    
+    <div>
+      <dt>Name</dt>
+      <dd>Mitch</dd>
+    </div>
+    
+    <div>
+      <dt>Primary Diagnosis</dt>
+      <dd>Progressive cerebellar degeneration post-TBI</dd>
+    </div>
+    
+    <div>
+      <dt>Insurance</dt>
+      <dd>BCBS</dd>
+    </div>
+    
+    <div>
+      <dt>Referring Physician</dt>
+      <dd>M. Alexander, MD</dd>
+    </div>
+    
+    <div>
+      <dt>Age</dt>
+      <dd>59</dd>
+    </div>
+    
+    <div>
+      <dt>Gender Identity</dt>
+      <dd>Male</dd>
+    </div>
+    
+    <div>
+      <dt>Pronouns</dt>
+      <dd>He/him/his</dd>
+    </div>
+    
+    <div>
+      <dt>Race/Ethnicity</dt>
+      <dd>White</dd>
+    </div>
+    
+  </dl>
+</div>
+  <div class="tab-container">
+    <div class="tab-nav">
+      
+      <button class="tab-nav-button active" data-target="tab-1">Medical History</button>
+      
+      <button class="tab-nav-button " data-target="tab-2">Social History</button>
+      
+      <button class="tab-nav-button " data-target="tab-3">Medications</button>
+      
+    </div>
+    <div class="tab-content">
+      
+      <div id="tab-1" class="tab-panel active">
+        <p>52yo WM with progressive cerebellar degeneration post-TBI from MVA 41 years ago, the summer after graduating high school. Sustained 4hr loss of consciousness and underwent craniotomy and cranioplasty. Hospitalized in acute care for 1 month with d/c home. During college years later, he noticed decreased balance and loss of coordination and was diagnosed with progressive cerebellar degeneration. Past medical history includes torn medial meniscus in R knee.</p>
+      </div>
+      
+      <div id="tab-2" class="tab-panel ">
+        <p><strong>Marital status:</strong>Single</p>
+<p><strong>Primary language:</strong>English</p>
+<p><strong>Current level of function:</strong>Modified independent with all ADLs/IADLs using rollator, mobility scooter, or manual wheelchair. Drives independently.</p>
+<p><strong>Employment/work/school:</strong>College education. Part-time records clerk for the county. Work duties involve prolonged sitting at a desk and occasionally lifting up to 20 pounds.</p>
+<p><strong>Play/leisure/interests:</strong>Enjoys participating in adaptive sports program activities including cycling and rowing. Regularly attends church and is involved in church events.</p>
+<p><strong>Environmental factors:</strong>Lives with two roomates in first floor of condo with no STE. Tub/shower combo with flexible shower hose, grab bars, and tub transfer bench. Standard toilet, no grab bars.</p>
+      </div>
+      
+      <div id="tab-3" class="tab-panel ">
+        <p>Ibuprofen PRN</p>
+      </div>
+      
+    </div>
+  </div>
+  <div style="padding: 0 20px 20px 20px; font-style: italic; color: #777;">
+    Disclaimer: Although the individuals in ICE videos are real patients, the exact history has been altered to protect their identities.
+  </div>
+</div>
+
+<script>
+  // --- CLIENT DATA ---
+  // Loaded externally from client-list.js via Squarespace Code Injection
+  function initClientFeatures() {
+    if (typeof clientData === "undefined") {
+      console.warn("Waiting for client-list.js to load...");
+      return setTimeout(initClientFeatures, 200);
+    }
+
+    // --- 1. Define Elements ---
+    const tabButtons = document.querySelectorAll(".tab-nav-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+    const searchInput = document.getElementById("client-search-input");
+    const searchButton = document.getElementById("client-search-button");
+    const resultsWrapper = document.getElementById("autocomplete-results");
+
+    // --- 2. Setup Tab Logic ---
+    if (tabButtons.length > 0 && tabPanels.length > 0) {
+      tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach(btn => btn.classList.remove("active"));
+          tabPanels.forEach(panel => panel.classList.remove("active"));
+
+          button.classList.add("active");
+          const targetPanel = document.getElementById(button.getAttribute("data-target"));
+          if (targetPanel) {
+            targetPanel.classList.add("active");
+          }
+        });
+      });
+    }
+
+    // --- 3. Setup Autocomplete Search Logic ---
+    if (searchInput && searchButton && resultsWrapper) {
+      // Function to perform the redirect
+      function goToClient(slug) {
+        if (!slug) return;
+        const baseUrl = "https://www.icelearningcenter.com/";
+        window.location.href = baseUrl + slug;
+      }
+
+      // Function to handle the search input
+      function handleSearchInput() {
+        const inputVal = searchInput.value.toLowerCase();
+        resultsWrapper.innerHTML = "";
+
+        if (!inputVal) {
+          resultsWrapper.style.display = "none";
+          return;
+        }
+
+        const matches = clientData.filter(client =>
+          client.name.toLowerCase().includes(inputVal)
+        );
+
+        if (matches.length > 0) {
+          resultsWrapper.style.display = "block";
+          matches.forEach(match => {
+            const item = document.createElement("div");
+            item.className = "autocomplete-item";
+            item.textContent = match.name;
+            item.addEventListener("click", function () {
+              searchInput.value = match.name;
+              resultsWrapper.style.display = "none";
+              goToClient(match.slug);
+            });
+            resultsWrapper.appendChild(item);
+          });
+        } else {
+          resultsWrapper.style.display = "none";
+        }
+      }
+
+      // Listen for typing in the search box
+      searchInput.addEventListener("input", handleSearchInput);
+
+      // Handle the "Go" button click
+      searchButton.addEventListener("click", function () {
+        const inputVal = searchInput.value.toLowerCase();
+        const exactMatch = clientData.find(client => client.name.toLowerCase() === inputVal);
+
+        if (exactMatch) {
+          goToClient(exactMatch.slug);
+        } else if (resultsWrapper.children.length > 0) {
+          // If no exact match but there are results, go to the first result
+          resultsWrapper.children[0].click();
+        }
+      });
+
+      // Handle pressing "Enter" in the search box
+      searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          searchButton.click();
+        }
+      });
+
+      // Close dropdown if user clicks outside of it
+      document.addEventListener("click", function (e) {
+        const wrapper = e.target.closest(".client-search-wrapper");
+        if (!wrapper) {
+          resultsWrapper.style.display = "none";
+        }
+      });
+    }
+  }
+
+  // Run once DOM is ready
+  document.addEventListener("DOMContentLoaded", initClientFeatures);
+</script>

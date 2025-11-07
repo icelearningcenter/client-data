@@ -1,0 +1,215 @@
+<div class="client-record-container">
+  <div class="client-header">
+    <div class="client-logo">
+      <img src="/s/Client-Record-Logo.png" alt="ICE Learning Center Logo">
+    </div>
+    <div class="client-search-wrapper">
+      <div class="client-search">
+        <input type="text" id="client-search-input" class="client-search-input" placeholder="Find a Client Record..." autocomplete="off">
+        <button id="client-search-button" class="client-search-button">Go</button>
+      </div>
+      <div class="autocomplete-results" id="autocomplete-results"></div>
+    </div>
+  </div>
+  <div class="client-info">
+    <h1>Paula</h1>
+    <h2>Client ID 019</h2>
+  </div>
+<div class="info-table-wrapper">
+  <dl class="info-list">
+    
+    <div>
+      <dt>Name</dt>
+      <dd>Paula</dd>
+    </div>
+    
+    <div>
+      <dt>Primary Diagnosis</dt>
+      <dd>R TKR</dd>
+    </div>
+    
+    <div>
+      <dt>Insurance</dt>
+      <dd>Medicare</dd>
+    </div>
+    
+    <div>
+      <dt>Referring Physician</dt>
+      <dd>Katherine Farrington, MD</dd>
+    </div>
+    
+    <div>
+      <dt>Age</dt>
+      <dd>65</dd>
+    </div>
+    
+    <div>
+      <dt>Gender Identity</dt>
+      <dd>Female</dd>
+    </div>
+    
+    <div>
+      <dt>Pronouns</dt>
+      <dd>She/her/hers</dd>
+    </div>
+    
+    <div>
+      <dt>Race/Ethnicity</dt>
+      <dd>Caucasian</dd>
+    </div>
+    
+  </dl>
+</div>
+  <div class="tab-container">
+    <div class="tab-nav">
+      
+      <button class="tab-nav-button active" data-target="tab-1">Medical History</button>
+      
+      <button class="tab-nav-button " data-target="tab-2">Social History</button>
+      
+      <button class="tab-nav-button " data-target="tab-3">MD Orders</button>
+      
+    </div>
+    <div class="tab-content">
+      
+      <div id="tab-1" class="tab-panel active">
+        
+<p><strong>History of present illness:</strong> <br/>65yo WF underwent R TKR, POD 7. Discharged from hospital on POD 1.</p>
+<p><strong>Past medical/surgical history:</strong><br/>B knee osteoarthritis, HTN</p>
+
+      </div>
+      
+      <div id="tab-2" class="tab-panel ">
+        
+<p><strong>Marital status:</strong> Married 35 years</p>
+<p><strong>Primary language:</strong> English</p>
+<p><strong>Prior level of function:</strong> Independent with all ADL/IADLs, including driving.</p>
+<p><strong>Employment/work/school:</strong> College education. Retired Army nurse.</p>
+<p><strong>Play/leisure/interests:</strong> Enjoys camping, hiking, and hosting cookouts for family and friends. Volunteers for veterans charities.</p>
+<p><strong>Environmental factors:</strong> Lives with husband in two-story house with 2 STE, no hand-rails. Walk-in shower (3” ledge). No DME. Best friend lives in the neighborhood.</p>
+
+      </div>
+      
+      <div id="tab-3" class="tab-panel ">
+        
+<p>FWB</p>
+
+      </div>
+      
+    </div>
+  </div>
+  <div style="padding: 0 20px 20px 20px; font-style: italic; color: #777;">
+    Disclaimer: Although the individuals in ICE videos are real patients, the exact history has been altered to protect their identities.
+  </div>
+</div>
+
+<script>
+  // --- CLIENT DATA ---
+  // Loaded externally from client-list.js via Squarespace Code Injection
+  function initClientFeatures() {
+    if (typeof clientData === "undefined") {
+      console.warn("Waiting for client-list.js to load...");
+      return setTimeout(initClientFeatures, 200);
+    }
+
+    // --- 1. Define Elements ---
+    const tabButtons = document.querySelectorAll(".tab-nav-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+    const searchInput = document.getElementById("client-search-input");
+    const searchButton = document.getElementById("client-search-button");
+    const resultsWrapper = document.getElementById("autocomplete-results");
+
+    // --- 2. Setup Tab Logic ---
+    if (tabButtons.length > 0 && tabPanels.length > 0) {
+      tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach(btn => btn.classList.remove("active"));
+          tabPanels.forEach(panel => panel.classList.remove("active"));
+
+          button.classList.add("active");
+          const targetPanel = document.getElementById(button.getAttribute("data-target"));
+          if (targetPanel) {
+            targetPanel.classList.add("active");
+          }
+        });
+      });
+    }
+
+    // --- 3. Setup Autocomplete Search Logic ---
+    if (searchInput && searchButton && resultsWrapper) {
+      // Function to perform the redirect
+      function goToClient(slug) {
+        if (!slug) return;
+        const baseUrl = "https://www.icelearningcenter.com/";
+        window.location.href = baseUrl + slug;
+      }
+
+      // Function to handle the search input
+      function handleSearchInput() {
+        const inputVal = searchInput.value.toLowerCase();
+        resultsWrapper.innerHTML = "";
+
+        if (!inputVal) {
+          resultsWrapper.style.display = "none";
+          return;
+        }
+
+        const matches = clientData.filter(client =>
+          client.name.toLowerCase().includes(inputVal)
+        );
+
+        if (matches.length > 0) {
+          resultsWrapper.style.display = "block";
+          matches.forEach(match => {
+            const item = document.createElement("div");
+            item.className = "autocomplete-item";
+            item.textContent = match.name;
+            item.addEventListener("click", function () {
+              searchInput.value = match.name;
+              resultsWrapper.style.display = "none";
+              goToClient(match.slug);
+            });
+            resultsWrapper.appendChild(item);
+          });
+        } else {
+          resultsWrapper.style.display = "none";
+        }
+      }
+
+      // Listen for typing in the search box
+      searchInput.addEventListener("input", handleSearchInput);
+
+      // Handle the "Go" button click
+      searchButton.addEventListener("click", function () {
+        const inputVal = searchInput.value.toLowerCase();
+        const exactMatch = clientData.find(client => client.name.toLowerCase() === inputVal);
+
+        if (exactMatch) {
+          goToClient(exactMatch.slug);
+        } else if (resultsWrapper.children.length > 0) {
+          // If no exact match but there are results, go to the first result
+          resultsWrapper.children[0].click();
+        }
+      });
+
+      // Handle pressing "Enter" in the search box
+      searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          searchButton.click();
+        }
+      });
+
+      // Close dropdown if user clicks outside of it
+      document.addEventListener("click", function (e) {
+        const wrapper = e.target.closest(".client-search-wrapper");
+        if (!wrapper) {
+          resultsWrapper.style.display = "none";
+        }
+      });
+    }
+  }
+
+  // Run once DOM is ready
+  document.addEventListener("DOMContentLoaded", initClientFeatures);
+</script>

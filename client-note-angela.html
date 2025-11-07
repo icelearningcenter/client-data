@@ -1,0 +1,231 @@
+<div class="client-record-container">
+  <div class="client-header">
+    <div class="client-logo">
+      <img src="/s/Client-Record-Logo.png" alt="ICE Learning Center Logo">
+    </div>
+    <div class="client-search-wrapper">
+      <div class="client-search">
+        <input type="text" id="client-search-input" class="client-search-input" placeholder="Find a Client Record..." autocomplete="off">
+        <button id="client-search-button" class="client-search-button">Go</button>
+      </div>
+      <div class="autocomplete-results" id="autocomplete-results"></div>
+    </div>
+  </div>
+  <div class="client-info">
+    <h1>Angela</h1>
+    <h2>Client ID 032</h2>
+  </div>
+<div class="info-table-wrapper">
+  <dl class="info-list">
+    
+    <div>
+      <dt>Name</dt>
+      <dd>Angela</dd>
+    </div>
+    
+    <div>
+      <dt>Primary Diagnosis</dt>
+      <dd>Osteomyelitis, end-stage renal disease</dd>
+    </div>
+    
+    <div>
+      <dt>Insurance</dt>
+      <dd>Medicare</dd>
+    </div>
+    
+    <div>
+      <dt>Referring Physician</dt>
+      <dd>B. Allen, MD</dd>
+    </div>
+    
+    <div>
+      <dt>Age</dt>
+      <dd>50</dd>
+    </div>
+    
+    <div>
+      <dt>Gender Identity</dt>
+      <dd>Female</dd>
+    </div>
+    
+    <div>
+      <dt>Pronouns</dt>
+      <dd>She/her/hers</dd>
+    </div>
+    
+    <div>
+      <dt>Race/Ethnicity</dt>
+      <dd>Black</dd>
+    </div>
+    
+  </dl>
+</div>
+  <div class="tab-container">
+    <div class="tab-nav">
+      
+      <button class="tab-nav-button active" data-target="tab-1">Medical History</button>
+      
+      <button class="tab-nav-button " data-target="tab-2">Social History</button>
+      
+      <button class="tab-nav-button " data-target="tab-3">MD Orders</button>
+      
+      <button class="tab-nav-button " data-target="tab-4">Medications</button>
+      
+      <button class="tab-nav-button " data-target="tab-5">Test Results</button>
+      
+    </div>
+    <div class="tab-content">
+      
+      <div id="tab-1" class="tab-panel active">
+        
+<p><strong>History of present illness:</strong> <br/>50yo Black female admitted to hospital 2 weeks ago with abnormal swelling, bone pain, and uncontrollable fever. Diagnosed with osteomyelitis. D/c to skilled nursing facility after 12 days in acute care.</p>
+<p><strong>Past medical/surgical history:</strong><br/>End-stage renal disease, anxiety, type II diabetes</p>
+
+      </div>
+      
+      <div id="tab-2" class="tab-panel ">
+        
+<p><strong>Marital status:</strong> Divorced</p>
+<p><strong>Primary language:</strong> English</p>
+<p><strong>Prior level of function:</strong> Prior to recent hospitalization, required partial assist for ADLs and substantial assist for IADLs. Used w/c for mobility.</p>
+<p><strong>Employment/work/school:</strong> College education. Former deli manager at supermarket, but had to quit due to decline in health.</p>
+<p><strong>Play/leisure/interests:</strong> Used to be very active in local church, volunteering to cook Sunday brunches and to lead bible studies. Less active the past few years due to poor health, but still attends church every Sunday.</p>
+<p><strong>Environmental factors:</strong> Lives with adult daughter in one-story house with 2 STE and portable ramp. Tub/Shower combo with shower curtain, handheld shower head, grab bars and tub transfer bench with back. Drop-arm BSC.</p>
+
+      </div>
+      
+      <div id="tab-3" class="tab-panel ">
+        
+<p>OOB<br/>WBAT<br/>Hemodialysis 3x/wk</p>
+
+      </div>
+      
+      <div id="tab-4" class="tab-panel ">
+        
+<p>Tylenol 650 mg TID PRN</p>
+
+      </div>
+      
+      <div id="tab-5" class="tab-panel ">
+        
+<p>CRP test: 8.1 mg/dL<br/>CT scan: kidneys appear small; outer layer thinner than normal</p>
+
+      </div>
+      
+    </div>
+  </div>
+  <div style="padding: 0 20px 20px 20px; font-style: italic; color: #777;">
+    Disclaimer: Although the individuals in ICE videos are real patients, the exact history has been altered to protect their identities.
+  </div>
+</div>
+
+<script>
+  // --- CLIENT DATA ---
+  // Loaded externally from client-list.js via Squarespace Code Injection
+  function initClientFeatures() {
+    if (typeof clientData === "undefined") {
+      console.warn("Waiting for client-list.js to load...");
+      return setTimeout(initClientFeatures, 200);
+    }
+
+    // --- 1. Define Elements ---
+    const tabButtons = document.querySelectorAll(".tab-nav-button");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+    const searchInput = document.getElementById("client-search-input");
+    const searchButton = document.getElementById("client-search-button");
+    const resultsWrapper = document.getElementById("autocomplete-results");
+
+    // --- 2. Setup Tab Logic ---
+    if (tabButtons.length > 0 && tabPanels.length > 0) {
+      tabButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          tabButtons.forEach(btn => btn.classList.remove("active"));
+          tabPanels.forEach(panel => panel.classList.remove("active"));
+
+          button.classList.add("active");
+          const targetPanel = document.getElementById(button.getAttribute("data-target"));
+          if (targetPanel) {
+            targetPanel.classList.add("active");
+          }
+        });
+      });
+    }
+
+    // --- 3. Setup Autocomplete Search Logic ---
+    if (searchInput && searchButton && resultsWrapper) {
+      // Function to perform the redirect
+      function goToClient(slug) {
+        if (!slug) return;
+        const baseUrl = "https://www.icelearningcenter.com/";
+        window.location.href = baseUrl + slug;
+      }
+
+      // Function to handle the search input
+      function handleSearchInput() {
+        const inputVal = searchInput.value.toLowerCase();
+        resultsWrapper.innerHTML = "";
+
+        if (!inputVal) {
+          resultsWrapper.style.display = "none";
+          return;
+        }
+
+        const matches = clientData.filter(client =>
+          client.name.toLowerCase().includes(inputVal)
+        );
+
+        if (matches.length > 0) {
+          resultsWrapper.style.display = "block";
+          matches.forEach(match => {
+            const item = document.createElement("div");
+            item.className = "autocomplete-item";
+            item.textContent = match.name;
+            item.addEventListener("click", function () {
+              searchInput.value = match.name;
+              resultsWrapper.style.display = "none";
+              goToClient(match.slug);
+            });
+            resultsWrapper.appendChild(item);
+          });
+        } else {
+          resultsWrapper.style.display = "none";
+        }
+      }
+
+      // Listen for typing in the search box
+      searchInput.addEventListener("input", handleSearchInput);
+
+      // Handle the "Go" button click
+      searchButton.addEventListener("click", function () {
+        const inputVal = searchInput.value.toLowerCase();
+        const exactMatch = clientData.find(client => client.name.toLowerCase() === inputVal);
+
+        if (exactMatch) {
+          goToClient(exactMatch.slug);
+        } else if (resultsWrapper.children.length > 0) {
+          // If no exact match but there are results, go to the first result
+          resultsWrapper.children[0].click();
+        }
+      });
+
+      // Handle pressing "Enter" in the search box
+      searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          searchButton.click();
+        }
+      });
+
+      // Close dropdown if user clicks outside of it
+      document.addEventListener("click", function (e) {
+        const wrapper = e.target.closest(".client-search-wrapper");
+        if (!wrapper) {
+          resultsWrapper.style.display = "none";
+        }
+      });
+    }
+  }
+
+  // Run once DOM is ready
+  document.addEventListener("DOMContentLoaded", initClientFeatures);
+</script>
