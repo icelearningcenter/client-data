@@ -62,5 +62,6 @@ const clientData = [
   { name: "063 Bubba", slug: "client-note-bubba" },
   { name: "064 John", slug: "client-note-john" },
   { name: "065 William", slug: "client-note-william" },
+  { name: "066 Hudson", slug: "client-note-hudson" },
   { name: "n/a Group Therapy", slug: "" }
 ];
